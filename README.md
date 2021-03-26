@@ -8,6 +8,7 @@ This project was made by Curtis Reynolds and Benjamin Tsoumagas.
 -
 Changed layout of Upload and Download buttons.
 Changed layout of Shared and Local table headers.
+Changed Colour Palette and added application icon.
 
 **How to run:**
 -

@@ -2,23 +2,30 @@
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.*?>
 <GridPane fx:controller="sample.Controller"
-          xmlns:fx="http://javafx.com/fxml" alignment="CENTER" hgap="10" vgap="10">
+          xmlns:fx="http://javafx.com/fxml" alignment="CENTER" hgap="10" vgap="10"
+            style="-fx-background: #4682B4; -fx-border-color: #B048B5;">
     <HBox GridPane.rowIndex = "0" GridPane.columnSpan = "2" alignment="CENTER" spacing = "5">
-        <Button id="ul" text="Upload" onAction="#handleUpload" fx:id="upload" prefWidth="250" prefHeight="50"/>
-        <Button id="dl" text="Download" onAction="#handleDownload" fx:id="download" prefWidth="250" prefHeight="50"/>
+        <Button id="ul" text="Upload" onAction="#handleUpload" fx:id="upload" prefWidth="250" prefHeight="50"
+                style="-fx-background-color: lavender; -fx-font-weight: bold;"/>
+        <Button id="dl" text="Download" onAction="#handleDownload" fx:id="download" prefWidth="250" prefHeight="50"
+                style="-fx-background-color: lavender; -fx-font-weight: bold;"/>
     </HBox>
-    <TableView fx:id="localTable" GridPane.rowIndex="1" GridPane.columnIndex="0">
+    <TableView fx:id="localTable" GridPane.rowIndex="1" GridPane.columnIndex="0"
+               style="-fx-background-color: lavender; -fx-border-color: #B048B5;">
         <columns>
-            <TableColumn fx:id="local" text="Local Files" prefWidth="250">
+            <TableColumn fx:id="local" text="Local Files" prefWidth="250"
+                         style="-fx-background-color: lavender;">
                 <cellValueFactory>
                     <PropertyValueFactory property="localFiles"/>
                 </cellValueFactory>
             </TableColumn>
         </columns>
     </TableView>
-    <TableView fx:id="sharedTable" GridPane.rowIndex="1" GridPane.columnIndex="1">
+    <TableView fx:id="sharedTable" GridPane.rowIndex="1" GridPane.columnIndex="1"
+               style="-fx-background-color: lavender; -fx-border-color: #B048B5;">
         <columns>
-            <TableColumn fx:id="shared" text="Shared Files" prefWidth="250">
+            <TableColumn fx:id="shared" text="Shared Files" prefWidth="250"
+                         style="-fx-background-color: lavender;">
                 <cellValueFactory>
                     <PropertyValueFactory property="sharedFiles"/>
                 </cellValueFactory>
