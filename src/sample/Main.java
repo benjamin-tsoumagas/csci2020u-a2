@@ -11,12 +11,14 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("a2.fxml"));
         primaryStage.setTitle("File Sharer v1.0");
 
         //Sets application icon as custom file sharer image
         Image icon = new Image("file:icon.png");
         primaryStage.getIcons().add(icon);
+
+        Client.getComputerName();
 
         primaryStage.setScene(new Scene(root, 600,600));
         primaryStage.show();
