@@ -4,6 +4,9 @@ This project is a file sharing application.
 Clients will connect to a central server and disconnect after processing one request.
 This project was made by Curtis Reynolds and Benjamin Tsoumagas.
 
+![image](https://user-images.githubusercontent.com/55511458/113039443-ab80c700-9165-11eb-9b32-ef145a74070f.png)
+
+
 **Improvements**
 -
 Changed the layout of Upload and Download buttons.
