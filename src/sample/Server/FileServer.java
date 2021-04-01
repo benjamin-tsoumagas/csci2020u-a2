@@ -1,4 +1,4 @@
-package sample;
+package sample.Server;
 
 import java.io.File;
 import java.io.IOException;

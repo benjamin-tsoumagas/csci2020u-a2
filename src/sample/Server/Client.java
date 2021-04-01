@@ -1,34 +1,13 @@
-package sample;
-
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+package sample.Server;
 
 import java.awt.*;
-import java.io.InputStreamReader;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class Client extends Frame {
 
-    @FXML
-    public TableColumn local;
-    @FXML
-    public TableColumn server;
-    @FXML
-    public TableView localTable;
-    @FXML
-    public TableView serverTable;
-    @FXML
-    public Button download;
-    @FXML
-    public Button upload;
+
 
     private Socket socket = null;
     private BufferedReader in = null;
@@ -75,38 +54,6 @@ public class Client extends Frame {
 //            e.printStackTrace();
 //        }
 //    }
-
-    protected boolean processUserInput() {
-        return true;
-    }
-
-    protected boolean login() {
-        return true;
-    }
-
-
-    public void handleDownload(ActionEvent event) {
-    }
-
-    public void handleUpload(ActionEvent event) {
-    }
-
-    //Returns computer name
-    public static String getComputerName(){
-
-        String computerName = "null";
-
-        try{
-            InetAddress address;
-            address = InetAddress.getLocalHost();
-            computerName = address.getHostName();
-
-        } catch (UnknownHostException uhe){
-            uhe.printStackTrace();
-        }
-        System.out.println(computerName);
-        return computerName;
-    }
 
 //    The client will have a simple user interface. When the client is started,
 //    the computer name and shared folder path are passed as command-line arguments.
