@@ -12,6 +12,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -73,6 +74,15 @@ public class Main extends Application {
 
     /**
      *
+     * @return get the absolute path to the shared folder relative to the user
+     */
+    public static String getPathName(){
+
+        return (new File("src/sample/shared").getAbsolutePath());
+    }
+
+    /**
+     *
      * @param primaryStage takes a stage which displays the UI
      * @throws Exception in case there is no fxml file to read from/load
      */
@@ -86,6 +96,8 @@ public class Main extends Application {
         //Sets application icon as custom file sharer image
         Image icon = new Image("file:icon.png");
         primaryStage.getIcons().add(icon);
+
+        getPathName();
 
         //sets scene as contents of fxml with specified width and height
         primaryStage.setScene(new Scene(root, 600,600));

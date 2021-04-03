@@ -15,7 +15,6 @@ public class FileServer{
     protected Vector messages = new Vector();
 
     private static int port = 8080;
-    private static String path = "";
     public static int clientCap = 25;
 
     public FileServer(){
@@ -28,7 +27,7 @@ public class FileServer{
             System.out.println("---------------------------");
             System.out.println("Computer name: "+ sample.UI.Main.getComputerName());
             System.out.println("---------------------------");
-            System.out.println("Shared file path: "+ path);
+            System.out.println("Shared file path: "+ sample.UI.Main.getPathName());
             threads = new FileServerThread[clientCap];
             while(true){
                 clientSocket = fileServerSocket.accept();
@@ -54,11 +53,6 @@ public class FileServer{
                 }
             } else {
                 port = 8080;
-            }
-            if(args[2] != null){
-                path = args[2];
-            } else {
-                path = "No given path";
             }
         }
         FileServer server = new FileServer();
