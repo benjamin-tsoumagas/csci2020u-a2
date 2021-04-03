@@ -24,13 +24,15 @@ Changed colour palette and added application icon.
 7. Open a command prompt and type 'git clone https://github.com/benjamin-tsoumagas/csci2020u-a1.git (You will need to install Git if you haven't already https://git-scm.com/downloads)
 8. Open this project using IntelliJ once the project is cloned and go to Run>Run 'Main'
    (For any issues running the project with IntelliJ, please refer to this YouTube video by Bro Code https://youtu.be/Ope4icw6bVk?list=LL)
+   
+   *To see the UI Window, change run configuration to UI and press Run(Shift+F10)  
+   *To see the server in action, change run configuration to Server and press Run, then change run configuration to Client and press Run
 
 **Other Resources**
 -
-Base application icon credit to: https://www.kindpng.com/imgv/JmmTix_folder-icon-folder-icon-png-vector-transparent-png/
-Icon edited using: https://pixlr.com/x/
-Used as reference: https://blog.eduonix.com/java-programming-2/learn-create-multi-threaded-server-java/#:~:text=%20The%20main%20advantages%20of%20using%20a%20multi-threaded,become%20unresponsive,%20but%20this%20is%20not...%20More
-https://stackoverflow.com/questions/25772640/java-socket-multithread-file-transfer
+Base application icon credit to: https://www.kindpng.com/imgv/JmmTix_folder-icon-folder-icon-png-vector-transparent-png/ \n
+Icon edited using: https://pixlr.com/x/  
+Used as reference:  
+https://blog.eduonix.com/java-programming-2/learn-create-multi-threaded-server-java/#:~:text=%20The%20main%20advantages%20of%20using%20a%20multi-threaded,become%20unresponsive,%20but%20this%20is%20not...%20More  
+https://stackoverflow.com/questions/25772640/java-socket-multithread-file-transfer  
 https://codereview.stackexchange.com/questions/20961/java-multi-thread-file-server-and-client
-https://stackoverflow.com/questions/37478875/multithread-file-server-java#:~:text=I%C2%B4m%20implementig%20a%20concurrent%20file%20server%20in%20Java.,listening%20server%20petitions%20%28files%20demanded%20by%20other%20clients%29.
-https://stackoverflow.com/questions/21431529/multithreaded-javachat-with-gui

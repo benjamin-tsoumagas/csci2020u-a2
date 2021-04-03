@@ -1,6 +1,5 @@
 package sample.Server;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -16,7 +15,6 @@ public class FileServer{
     protected Vector messages = new Vector();
 
     private static int port = 8080;
-    private static String computerName = "";
     private static String path = "";
     public static int clientCap = 25;
 
@@ -24,11 +22,11 @@ public class FileServer{
         try {
             fileServerSocket = new ServerSocket(port);
             System.out.println("---------------------------");
-            System.out.println("Chat Server Application is running");
+            System.out.println("File Server Application is running");
             System.out.println("---------------------------");
             System.out.println("Listening to port: "+ port);
             System.out.println("---------------------------");
-            System.out.println("Computer name: "+ computerName);
+            System.out.println("Computer name: "+ sample.UI.Main.getComputerName());
             System.out.println("---------------------------");
             System.out.println("Shared file path: "+ path);
             threads = new FileServerThread[clientCap];
@@ -48,9 +46,20 @@ public class FileServer{
     public static void main(String[] args){
         //port to listen default 8080, or the port from the argument
         if (args.length > 0){
-            port = Integer.parseInt(args[0]);
-            computerName = args[1];
-            path = args[2];
+            if(args[0] != null){
+                try {
+                    port = Integer.parseInt(args[0]);
+                } catch (NumberFormatException e){
+                    System.err.println("Invalid Port ID");
+                }
+            } else {
+                port = 8080;
+            }
+            if(args[2] != null){
+                path = args[2];
+            } else {
+                path = "No given path";
+            }
         }
         FileServer server = new FileServer();
     }

@@ -12,6 +12,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -30,24 +32,33 @@ public class Main extends Application {
     @FXML
     public Button upload;
 
+    /**
+     * @param event activates when user presses 'download' button
+     *              Tells user the button has been pressed
+     */
     public void handleDownload(ActionEvent event) {
+        System.out.println("Downloading Files");
+        //Download files from right table(shared) to left table(local)
+        //Transfer is a copy of every character in the file
     }
 
+    /**
+     * @param event activates when user presses 'upload' button
+     *              Tells user the button has been pressed
+     */
     public void handleUpload(ActionEvent event) {
+        System.out.println("Uploading Files");
+        //Upload files from left table(local) to right table(shared)
+        //Transfer is a copy of every character in the file
     }
 
-    protected boolean processUserInput() {
-        return true;
-    }
-
-    protected boolean login() {
-        return true;
-    }
-
-    //Returns computer name
+    /**
+     *
+     * @return computerName of the person running this program
+     */
     public static String getComputerName(){
 
-        String computerName = "null";
+        String computerName = "---";
 
         try{
             InetAddress address;
@@ -57,12 +68,18 @@ public class Main extends Application {
         } catch (UnknownHostException uhe){
             uhe.printStackTrace();
         }
-        System.out.println(computerName);
         return computerName;
     }
 
+    /**
+     *
+     * @param primaryStage takes a stage which displays the UI
+     * @throws Exception in case there is no fxml file to read from/load
+     */
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws IOException {
+
+        //Loads .fxml file and sets stage title
         Parent root = FXMLLoader.load(getClass().getResource("a2.fxml"));
         primaryStage.setTitle("File Sharer v1.0");
 
@@ -70,13 +87,17 @@ public class Main extends Application {
         Image icon = new Image("file:icon.png");
         primaryStage.getIcons().add(icon);
 
-        getComputerName();
-
+        //sets scene as contents of fxml with specified width and height
         primaryStage.setScene(new Scene(root, 600,600));
+
+        //displays stage
         primaryStage.show();
     }
 
-
+    /**
+     *
+     * @param args takes VM arguments from run configuration to display a user interface window
+     */
     public static void main(String[] args) {
         launch(args);
     }
