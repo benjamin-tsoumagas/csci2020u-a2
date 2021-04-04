@@ -3,19 +3,13 @@ package sample.Server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Vector;
 
 public class FileServer{
 
     protected ServerSocket fileServerSocket = null;
     protected Socket clientSocket = null;
-    protected FileServerThread[] threads = null;
-    protected int numClients = 0;
-    //change this
-    protected Vector messages = new Vector();
 
     private static int port = 8080;
-    public static int clientCap = 25;
 
     public FileServer(){
         try {
@@ -28,14 +22,11 @@ public class FileServer{
             System.out.println("Computer name: "+ sample.UI.Main.getComputerName());
             System.out.println("---------------------------");
             System.out.println("Shared file path: "+ sample.UI.Main.getPathName());
-            threads = new FileServerThread[clientCap];
             while(true){
                 clientSocket = fileServerSocket.accept();
-                System.out.println("Client #" + (numClients+1) + " connected.");
-                //change this
-                threads[numClients] = new FileServerThread(clientSocket, messages);
-                threads[numClients].start();
-                numClients++;
+                System.out.println("Client " + sample.UI.Main.getComputerName() + " connected.");
+                Thread thread = new Thread(new FileServerThread(clientSocket));
+                thread.start();
             }
         } catch (IOException e) {
             System.out.println("IOException while creating server connection.");

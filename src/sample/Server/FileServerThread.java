@@ -1,133 +1,104 @@
 package sample.Server;
 
 import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.net.Socket;
 
-public class FileServerThread extends Thread {
-    protected Socket socket       = null;
-    protected PrintWriter out     = null;
-    protected BufferedReader in   = null;
+public class FileServerThread implements Runnable {
 
-    // our server's secret code to connect
-    //Ps we could read this code at the creation of server so becomes a private chat room for those with the code only
-    // based on the server code, you could also store the history of conversations, which could be restored in a future session
-    protected String strPasswords = "oursecretchat";
+    private final Socket clientSocket;
+    private BufferedReader in = null;
 
-    protected boolean bLoggedIn   = false;
-    protected String strUserID    = null;
-    protected String strPassword  = null;
-
-    protected Vector messages     = null;
-
-    public FileServerThread(Socket socket, Vector messages) {
-        super();
-        this.socket = socket;
-        this.messages = messages;
-        try {
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        } catch (IOException e) {
-            System.err.println("IOException while opening a read/write connection");
-        }
+    /**
+     *
+     * @param client takes a client to instantiate a socket
+     */
+    public FileServerThread(Socket client) {
+        this.clientSocket = client;
     }
 
+    /**
+     * Awaits user input, 1 for download and 2 for upload, client closes after each
+     * Otherwise, client crashes
+     */
+    @Override
     public void run() {
-        // initialize interaction
-        out.println("Connected to File Server");
-        out.println("200 Ready For File Sharing");
-
-        boolean endOfSession = false;
-        while(!endOfSession) {
-            endOfSession = processCommand();
-        }
         try {
-            socket.close();
-        } catch(IOException e) {
-            e.printStackTrace();
+            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            String clientSelection;
+            while ((clientSelection = in.readLine()) != null) {
+                switch (clientSelection) {
+                    case "1" -> {
+                        downloadFile();
+                        System.exit(0);
+                    }
+                    case "2" -> {
+                        String outFile;
+                        while ((outFile = in.readLine()) != null) {
+                            uploadFile(outFile);
+                            System.exit(0);
+                        }
+                    }
+                    default -> {
+                        System.err.println("Incorrect command received.");
+                        System.exit(1);
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            System.err.println("Could not read from "+sample.UI.Main.getComputerName());
         }
     }
 
-    protected boolean processCommand() {
-        String message = null;
+    /**
+     * Reads from target shared file and creates a local copy
+     */
+    public void downloadFile() {
         try {
-            message = in.readLine();
+            BufferedReader br = new BufferedReader(new FileReader(String.valueOf(clientSocket.getInputStream())));
+            FileWriter write = new FileWriter(sample.UI.Main.getComputerName()+ clientSocket.getInputStream());
+
+            String line;
+            while ((line = br.readLine()) != null){
+                write.write(line);
+                write.write("\n");
+                write.flush();
+            }
+            write.close();
+            System.out.println("File "+ clientSocket.getInputStream() +" downloaded from client");
         } catch (IOException e) {
-            System.err.println("Error reading command from socket.");
-            return true;
-        }
-        if (message == null) {
-            return true;
-        }
-        StringTokenizer st = new StringTokenizer(message);
-        String command = st.nextToken();
-        String args = null;
-        if (st.hasMoreTokens()) {
-            args = message.substring(command.length()+1, message.length());
-        }
-        return processCommand(command, args);
-    }
-
-    protected boolean processCommand(String command, String arguments) {
-        if (command.equalsIgnoreCase("UID")) {
-            // Store the userID, Ask for password
-            strUserID = arguments;
-            out.println("200 Please Enter the Password");
-            return false;
-        } else if (command.equalsIgnoreCase("PWD")) {
-            // Check the password
-            strPassword = arguments;
-            boolean loginCorrect = false;
-
-            if (strPasswords.equalsIgnoreCase(strPassword)) {
-                loginCorrect = true;
-            }
-
-            if (loginCorrect) {
-                out.println("200 Login Successful");
-            } else {
-                out.println("500 Login Incorrect");
-                strUserID = null;
-                strPassword = null;
-            }
-            return false;
-        } else {
-            if (strPassword == null) {
-                // they are not logged in
-                // they cannot issue any other commands
-                out.println("500 Unauthenticated Client:  Please Log In");
-                return false;
-            }
-        }
-
-        // these are the other possible commands
-        if (command.equalsIgnoreCase("LASTMSG")) {
-            out.println("200 LastMessage: "+(messages.size()-1));
-            return false;
-        } else if (command.equalsIgnoreCase("GETMSG")) {
-            int id = Integer.parseInt(arguments);
-            if (id < messages.size()) {
-                String msg = (String)messages.elementAt(id);
-                out.println("200 Message #"+id+": "+msg);
-            } else {
-                out.println("400 Message Does Not Exist");
-            }
-            return false;
-        } else if (command.equalsIgnoreCase("ADDMSG")) {
-            int id = -1;
-            synchronized(this) {
-                messages.addElement("["+strUserID+"]: "+arguments);
-                id = messages.size()-1;
-            }
-            out.println("200 Message Sent: "+id);
-            return false;
-        } else if (command.equalsIgnoreCase("LOGOUT")) {
-            out.println("200 Client Logged Out");
-            return true;
-        } else {
-            out.println("400 Unrecognized Command: "+command);
-            return false;
+            System.err.println("Client error. Connection closed.");
         }
     }
 
+    /**
+     *
+     * @param fileName name of local file to upload
+     *                 Reads from local file and creates a copy in the shared folder
+     */
+    public void uploadFile(String fileName) {
+        try {
+            File dir = new File("src/sample/Shared");
+
+            String src = dir.getAbsolutePath() + "/" + fileName;
+            String dest = dir.getAbsolutePath() + "/" + fileName;
+
+            File f = new File(src);
+            FileInputStream fin = new FileInputStream(f);
+            BufferedReader in = new BufferedReader(new InputStreamReader(fin));
+
+            FileWriter write = new FileWriter(dest);
+
+            String line;
+            while ((line = in.readLine()) != null) {
+                write.write(line);
+                write.write("\n");
+                write.flush();
+            }
+            write.close();
+            System.out.println("File " + fileName + " uploaded to client");
+
+        } catch (IOException e) {
+            System.err.println("Client error. Connection closed.");
+        }
+    }
 }

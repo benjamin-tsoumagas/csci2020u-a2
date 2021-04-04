@@ -13,7 +13,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -38,9 +37,16 @@ public class Main extends Application {
      *              Tells user the button has been pressed
      */
     public void handleDownload(ActionEvent event) {
-        System.out.println("Downloading Files");
+        manualDownload();
         //Download files from right table(shared) to left table(local)
         //Transfer is a copy of every character in the file
+    }
+
+    /**
+     * Triggered by number commands from the terminal to download
+     */
+    public static void manualDownload(){
+        System.out.println("Downloading Files");
     }
 
     /**
@@ -48,9 +54,16 @@ public class Main extends Application {
      *              Tells user the button has been pressed
      */
     public void handleUpload(ActionEvent event) {
-        System.out.println("Uploading Files");
+        manualUpload();
         //Upload files from left table(local) to right table(shared)
         //Transfer is a copy of every character in the file
+    }
+
+    /**
+     * Triggered by number commands from the terminal to upload
+     */
+    public static void manualUpload(){
+        System.out.println("Uploading Files");
     }
 
     /**

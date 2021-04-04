@@ -1,10 +1,7 @@
 package sample.Server;
 
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.StringTokenizer;
@@ -12,17 +9,20 @@ import java.util.StringTokenizer;
 public class Client extends Frame {
 
     private Socket socket = null;
-    private BufferedReader in = null;
+    private static BufferedReader in = null;
     private PrintWriter networkOut = null;
-    private BufferedReader networkIn = null;
+    private static BufferedReader networkIn = null;
+    private static String fileName = "";
+    private PrintStream os = null;
 
     //we can read this from the user too
     public static String SERVER_ADDRESS = "localhost";
     public static int    port = 8080;
 
-    public Client(){
+    public Client() throws IOException {
         try{
             socket = new Socket(SERVER_ADDRESS, port);
+            in = new BufferedReader(new InputStreamReader(System.in));
         } catch (UnknownHostException e){
             System.err.println("Unknown host: " + SERVER_ADDRESS);
         } catch (IOException e) {
@@ -39,16 +39,7 @@ public class Client extends Frame {
         }
         in = new BufferedReader(new InputStreamReader(System.in));
 
-        boolean verified = login();
-
-        if(!verified){
-            System.exit(0);
-        }
-
-        verified = true;
-        while(verified){
-            verified = processUserInput();
-        }
+        transfer();
 
         try{
             socket.close();
@@ -56,72 +47,12 @@ public class Client extends Frame {
             e.printStackTrace();
         }
     }
-
-    // Logcin function
-    protected boolean login() {
-        String input = null;
-        String message = null;
-        int errorCode = 0;
-
-        try {
-            message = networkIn.readLine(); //Welcome to chat
-            System.out.println(message);
-            message = networkIn.readLine(); //200 Message serves is ready
-            System.out.println(message);
-        } catch (IOException e) {
-            System.err.println("Error reading initial greeting from socket.");
-        }
-
-
-        while(errorCode != 200) {
-            // get userID
-            System.out.print("Type your username (quit to exit): ");
-            try {
-                input = in.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (input.equalsIgnoreCase("quit")) {
-                return false;
-            }
-            networkOut.println("UID "+input);
-            try {
-                message = networkIn.readLine();
-            } catch (IOException e) {
-                System.err.println("Error reading response to UID.");
-            }
-
-            // get password
-            System.out.print("Passcode: ");
-            try {
-                input = in.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            networkOut.println("PWD "+input);
-            try {
-                message = networkIn.readLine();
-            } catch (IOException e) {
-                System.err.println("Error reading response to UID.");
-            }
-
-            errorCode = getErrorCode(message);
-            if (errorCode != 200) {
-                System.out.println("Login unsuccessful: "+getErrorMessage(message));
-                return false;
-            }
-        }
-        return true;
-    }
-
-    protected boolean processUserInput() {
+    protected static String transfer() throws IOException{
         String input = null;
 
-        // print the menu
         System.out.println("Commands: ");
-        System.out.println("1 - List All Messages");
-        System.out.println("2 - Add New Message");
-        System.out.println("3 - Quit");
+        System.out.println("1 - Upload");
+        System.out.println("2 - Download");
         System.out.print("Command> ");
 
         try {
@@ -129,20 +60,19 @@ public class Client extends Frame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        assert input != null;
         if (input.equals("1")) {
-            listAllMessages();
+            downloadFile();
         } else if (input.equals("2")) {
-            addNewMessage();
-        } else if (input.equals("3")) {
-            return false;
+            uploadFile(fileName);
         }
-        return true;
+        return input;
     }
 
     protected int getErrorCode(String message) {
         StringTokenizer st = new StringTokenizer(message);
         String code = st.nextToken();
-        return (new Integer(code)).intValue();
+        return Integer.parseInt(code);
     }
 
     protected String getErrorMessage(String message) {
@@ -155,54 +85,31 @@ public class Client extends Frame {
         return errorMessage;
     }
 
-    public void addNewMessage() {
-        String message = null;
-        String input = null;
+    public static void uploadFile(String fileName) {
 
-        System.out.print("Please type message: ");
-        try {
-            input = in.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        networkOut.println("ADDMSG "+input);
-
-        // read and ignore response
-        try {
-            message = networkIn.readLine();
-        } catch (IOException e) {
-            System.err.println("Error reading from socket.");
-        }
     }
 
-    public void listAllMessages() {
-        String message = null;
-
-        networkOut.println("LASTMSG");
-
-        // read response, store id
-        int id = -1;
+    public static void downloadFile() {
         try {
-            message = networkIn.readLine();
-        } catch (IOException e) {
-            System.err.println("Error reading from socket.");
-        }
-        String strID = message.substring(message.indexOf(':')+1);
-        id = (new Integer(strID.trim())).intValue();
-        for (int i = 0; i <= id; i++) {
-            networkOut.println("GETMSG "+i);
-            try {
-                message = networkIn.readLine();
-            } catch (IOException e) {
-                System.err.println("Error reading from socket.");
+            System.out.print("Enter file name: ");
+            File file = new File(networkIn.readLine());
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            FileWriter write = new FileWriter(file);
+
+            String line;
+            while ((line = br.readLine()) != null){
+                write.write(line);
+                write.write("\n");
+                write.flush();
             }
-            int index = message.indexOf(':')+1;
-            String msg = message.substring(index);
-            System.out.println(msg);
+            write.close();
+            System.out.println("File "+ file +" received from client");
+        } catch (IOException e) {
+            System.err.println("Client error. Connection closed.");
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Client client = new Client();
     }
 

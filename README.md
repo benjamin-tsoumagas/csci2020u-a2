@@ -35,4 +35,5 @@ Icon edited using: https://pixlr.com/x/
 Used as reference:  
 https://blog.eduonix.com/java-programming-2/learn-create-multi-threaded-server-java/#:~:text=%20The%20main%20advantages%20of%20using%20a%20multi-threaded,become%20unresponsive,%20but%20this%20is%20not...%20More  
 https://stackoverflow.com/questions/25772640/java-socket-multithread-file-transfer  
-https://codereview.stackexchange.com/questions/20961/java-multi-thread-file-server-and-client
+https://codereview.stackexchange.com/questions/20961/java-multi-thread-file-server-and-client  
+https://www.candidjava.com/tutorial/program-to-copy-the-content-from-one-file-to-another/
