@@ -84,7 +84,22 @@ public class Client extends Frame {
      * @param fileName name of local file user wishes to upload
      */
     public static void uploadFile(String fileName) {
+        try {
+            File file = new File("src/sample/Shared"+fileName);
+            BufferedReader br = new BufferedReader(new FileReader(fileName));
+            FileWriter write = new FileWriter(file);
 
+            String line;
+            while ((line = br.readLine()) != null){
+                write.write(line);
+                write.write("\n");
+                write.flush();
+            }
+            write.close();
+            System.out.println("File "+ file +" uploaded to client");
+        } catch (IOException e) {
+            System.err.println("Client error. Connection closed.");
+        }
     }
 
     /**
@@ -104,7 +119,7 @@ public class Client extends Frame {
                 write.flush();
             }
             write.close();
-            System.out.println("File "+ file +" received from client");
+            System.out.println("File "+ file +" downloaded from client");
         } catch (IOException e) {
             System.err.println("Client error. Connection closed.");
         }
@@ -118,13 +133,5 @@ public class Client extends Frame {
     public static void main(String[] args) throws IOException {
         Client client = new Client();
     }
-
-//    The client will have a simple user interface. When the client is started,
-//    the computer name and shared folder path are passed as command-line arguments.
-//    The client will then show a split screen showing two lists.
-//    Both lists will consist of filenames.
-//    On the left will be the list of all files in the shared folder of the local client.
-//    On the right will be the list of files in the shared folder of the server.
-
 
 }
