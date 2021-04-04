@@ -4,21 +4,24 @@ import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.StringTokenizer;
 
 public class Client extends Frame {
 
     private Socket socket = null;
     private static BufferedReader in = null;
-    private PrintWriter networkOut = null;
     private static BufferedReader networkIn = null;
     private static String fileName = "";
-    private PrintStream os = null;
 
     //we can read this from the user too
     public static String SERVER_ADDRESS = "localhost";
     public static int    port = 8080;
 
+    /**
+     * Creates an instance of the client class, one per user on the server
+     * Instantiates a socket and attempts to read input from the user
+     * Calls transfer method
+     * @throws IOException if given file is invalid
+     */
     public Client() throws IOException {
         try{
             socket = new Socket(SERVER_ADDRESS, port);
@@ -32,7 +35,6 @@ public class Client extends Frame {
             System.err.println("Socket is null");
         }
         try{
-            networkOut = new PrintWriter(socket.getOutputStream(),true);
             networkIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
             System.err.println("IOException while opening a read/write connection");
@@ -47,7 +49,12 @@ public class Client extends Frame {
             e.printStackTrace();
         }
     }
-    protected static String transfer() throws IOException{
+
+    /**
+     * User interface and leads to upload/download methods
+     * @return String user input
+     */
+    protected static String transfer() {
         String input = null;
 
         System.out.println("Commands: ");
@@ -63,32 +70,26 @@ public class Client extends Frame {
         assert input != null;
         if (input.equals("1")) {
             downloadFile();
-        } else if (input.equals("2")) {
+        }if (input.equals("2")) {
             uploadFile(fileName);
+        }else{
+            System.out.println("Invalid command");
+            transfer();
         }
         return input;
     }
 
-    protected int getErrorCode(String message) {
-        StringTokenizer st = new StringTokenizer(message);
-        String code = st.nextToken();
-        return Integer.parseInt(code);
-    }
-
-    protected String getErrorMessage(String message) {
-        StringTokenizer st = new StringTokenizer(message);
-        String code = st.nextToken();
-        String errorMessage = null;
-        if (st.hasMoreTokens()) {
-            errorMessage = message.substring(code.length()+1, message.length());
-        }
-        return errorMessage;
-    }
-
+    /**
+     * Copies contents of local file to file in shared folder (unfinished)
+     * @param fileName name of local file user wishes to upload
+     */
     public static void uploadFile(String fileName) {
 
     }
 
+    /**
+     * Copies contents from file in shared folder to local folder
+     */
     public static void downloadFile() {
         try {
             System.out.print("Enter file name: ");
@@ -109,6 +110,11 @@ public class Client extends Frame {
         }
     }
 
+    /**
+     * Creates an instance of the Client object
+     * @param args arguments passed by default when running main method
+     * @throws IOException in case of any input/output exceptions
+     */
     public static void main(String[] args) throws IOException {
         Client client = new Client();
     }
